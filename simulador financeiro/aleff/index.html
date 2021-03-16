@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/estilo.css">
+    <title>Simulador Financeiro - Hemolines Solutions</title>
+</head>
+
+<body>
+    <div class="left">
+        <img src="assets/img/logo.png" alt="Logo Hemolines Solutions">
+        <h1>Solutions</h1>
+
+        <p>Simule o orçamento do transporte do seu produto </p>
+        <p>através do nosso sistema!</p>
+    </div>
+    <div class="right">
+        <h1>Simulador Financeiro</h1>
+
+        <p>Quantidade de caixas:</p>
+        <input type="text" id="quantidade_caixas">
+        
+        <p>Quantidade de Veículos:</p>
+        <input type="text" id="quantidade_veiculos">
+            <br>
+        <button onclick="calc_orcamento()">Calcular Orçamento</button>
+    </div>
+    <div class="info">
+        <div class="info-item">
+            <h1>Valor Inicial</h1>
+            <p id="valor_inicial"></p>
+        </div>
+        <div class="info-item">
+            <h1>Valor Mensal</h1>
+            <p id="valor_ms"></p>
+        </div>
+        <div class="info-item">
+            <h1>Valor Total</h1>
+            <p id="valor_total"></p>
+        </div>
+    </div>
+    <h1 class="title-info2">Como funciona nosso Orçamento?</h1>
+  <center>  
+    <div class="info2">
+            <div class="info-item2">
+                <h2>Valor Inicial</h2>
+                <ul>
+                    <li><p>A taxa inicial consiste nos valores de compra e 
+                    instalação de nossos equipamentos (sensores e placas).</p></li>
+                    <li><p>Você só paga esse valor quando ainda não é  cliente da Hemolines,
+                    ou quando deseja ampliar ainda mais sua infraestrutura de transporte monitorado!</p></li>
+                </ul>
+            </div>
+            <div class="info-item2">
+                <h2>Valor Mensal (Base)</h2>
+                <ul>
+                    <li><p>O valor mensal (base) é uma taxa de manutenção, que equivale a 10% do valor de
+                    instalação, cobrindo os custos com manutenção e reposição de equipamentos.</p></li>
+                    <li><p>O cliente Hemolines só paga pelas horas de serviço que utiliza! Ao final do mês,
+                    calculamos o tempo monitorado: para cada hora cobramos R$30,00 por caixa.</p></li>
+                </ul>
+            </div>
+            <div class="info-item2">
+                <h2>Valor Total</h2>
+                <ul>
+                    <li><p>O valor total consiste no valor inicial e o valor mensal (base) totalizando
+                    no que o cliente Hemolines irá pagar.</p></li>
+                    <li><p>Esse valor inicial dependerá da quantidade de equipamentos a ser comprado e instalado
+                    e o valor mensal (base) dependerá <b>APENAS</b> das horas de uso dos equipamentos ja comprados
+                    e instalados nos veículos.</p></li>
+                </ul>
+            </div>
+    </div>
+</center>
+    <div class="footer">
+
+    </div>
+</body>
+
+</html>
+
+<script>
+    function calc_orcamento() {
+        //Consideramos que será 1 arduino por veículo e 1 sensor por caixa
+
+        var qtd_caixas = Number(quantidade_caixas.value); //input informada pelo cliente
+        var qtd_veiculos = Number(quantidade_veiculos.value); //input informada pelo cliente
+
+        var vl_arduino = 60; //valor fixo estipulado nosso
+        var vl_sensor = 15; //''''''''
+
+        //150: valor padrão definido por nós para instalação
+        //35: valor padrão definido por nós para instalação
+
+        var vl_inst_arduino = qtd_veiculos * 150; // valor total de instalação apenas dos arduinos
+        var vl_inst_sensores = qtd_caixas * 35; // valor total de instalação apenas das caixass
+
+        var vl_inst_total = vl_inst_arduino + vl_inst_sensores;// valor total apenas de instalação
+
+        var vl_equip_total = (vl_arduino * qtd_veiculos) + (vl_sensor * qtd_caixas);// valor total dos equipamentos
+
+        var vl_inicial = vl_inst_total + vl_equip_total;//Valor inicial composto por valor de equipamento e instalação deles
+
+        console.log(vl_inicial); //Exibe no console do navegador o valor inicial
+
+
+
+        var porcent_inst = 10 / 100; //10% corresponde a porcentagem do valor inicial, sendo um valor fixo mensal de manutenção
+
+        var vl_mensal = vl_inicial * porcent_inst; //valor mensal (base) corresponde a 10% do valor inicial
+
+        console.log(vl_mensal);//Exibe no console do navegador o valor mensal (base) que será cobra mesmo que o cliente não faça uso do serviço
+        
+        //min = minutos, monitor = monitoramento, inst = instalacao
+
+        var vl_min_caixa = 0.50; // Definimos que 0.50 será o valor cobrado por minuto de monitoramento(cada caixa)
+        var vl_monitor_min = vl_min_caixa * qtd_caixas;
+
+        //O valor 5 pode ser outro, pois será um valor digitado pelo cliente
+        var num = 5 * 60; // 5 corresponde ao número de horas usados como exemplo, multiplicamos por 60 para transformar em minutos
+
+        var vl_total_monitor = num * vl_monitor_min; //Valor total de monitoramento 
+
+        var vl_total_mes = vl_total_monitor + vl_mensal;//Valor tota do mês
+
+        var vl_totall = vl_mensal + vl_inicial;
+
+        console.log(vl_total_mes);//Exibe no console o valor total que será pago por mês ;)
+
+        valor_inicial.innerHTML = `O valor inicial será de R$ ${vl_inicial.toFixed(2)}`;
+        valor_ms.innerHTML = `O valor mensal será de R$ ${vl_mensal.toFixed(2)}`;
+        valor_total.innerHTML = `Você irá pagar no total R$ ${vl_totall.toFixed(2)}`;
+
+    }
+</script>
